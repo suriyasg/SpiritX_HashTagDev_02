@@ -1,4 +1,4 @@
-import { createPlayer } from "@/firebase/PlayerService";
+import { createPlayer, deletePlayer } from "@/firebase/PlayerService";
 import { Player } from "../../../../datamodel/types";
 import { StatusCode } from "@/constants/StatusCode";
 
@@ -10,16 +10,16 @@ interface ResponseData {
 
 export async function POST(req:Request) {
     try {
-        const player = await req.json();
-        console.log(player)
-        const player_id = await createPlayer(player);
+        const {player_id} = await req.json();
+        console.log(player_id)
+        const result = await deletePlayer(player_id);
     
-        if(player_id) {
-            var response : ResponseData = {data: null, message: "Successfully Created Player", statusCode: StatusCode.SUCCESS}
+        if(result) {
+            var response : ResponseData = {data: null, message: "Successfully Deleted Player", statusCode: StatusCode.SUCCESS}
             return new Response(JSON.stringify(response), { status: 200 });
         }
         else{
-            var response : ResponseData = {data: null, message: "Failed to Create Player", statusCode: StatusCode.FAILED_PLAYER_CREATION}
+            var response : ResponseData = {data: null, message: "Failed to delete Player", statusCode: StatusCode.FAILED_PLAYER_DELETION}
             return new Response(JSON.stringify(response), { status: 500 });
         }
     }

@@ -1,4 +1,4 @@
-import { getPlayersByCategory } from "@/firebase/PlayerService";
+import { getAllPlayers } from "@/firebase/PlayerService";
 import { Player } from "../../../../datamodel/types";
 import { StatusCode } from "@/constants/StatusCode";
 
@@ -8,11 +8,9 @@ interface ResponseData {
     statusCode: StatusCode;
 }
 
-export async function POST(req: Request) {
+export async function GET(req: Request) {
     try {
-        const { category } = await req.json();
-        console.log(category);
-        const players = await getPlayersByCategory(category);
+        const players = await getAllPlayers();
         return new Response(JSON.stringify(players), { status: 200 });
     }
     catch (error) {
