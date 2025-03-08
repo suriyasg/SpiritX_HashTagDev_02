@@ -4,12 +4,19 @@ export type Admin = {
     password: string;
 }
 
+export type LeaderBoardRecord = {
+    user_id: string;
+    username: string;
+    team_total_points: number;
+}
+
 export type User = {
     user_id: string;
     username: string;
     password: string;
     money: number;
     player_ids?: string[];
+    team_total_points?: number
 }
 
 export type Player = {
