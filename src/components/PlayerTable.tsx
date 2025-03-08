@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Player } from "../../datamodel/types";
+import { calculatePoints, calculateValue } from "@/utils/playerCalculations";
 
 const PlayerTable = ({ playerData }: { playerData: Player[] }) => {
   const [modalOpen, setModalOpen] = useState(false);
@@ -57,7 +58,7 @@ const PlayerTable = ({ playerData }: { playerData: Player[] }) => {
                       className="px-6 py-2 text-sm font-medium text-white bg-blue-500 rounded-md hover:bg-blue-600 shadow-lg hover:shadow-blue-500/50 transition-all duration-300 backdrop-blur-lg"
                       onClick={() => handleActionModal(player, "view")}
                     >
-                      View
+                      Stats
                     </button>
                     <button
                       className="px-6 py-2 text-sm font-medium text-white bg-yellow-500 rounded-md hover:bg-yellow-600 shadow-lg hover:shadow-yellow-500/50 transition-all duration-300 backdrop-blur-lg"
@@ -129,6 +130,16 @@ const PlayerTable = ({ playerData }: { playerData: Player[] }) => {
 
                   <div className="font-semibold">Runs Conceded:</div>
                   <div>{selectedPlayer.runs_conceded}</div>
+
+                  <div className="font-semibold text-gray-200">Points:</div>
+                  <div className="text-gray-200">
+                    {calculatePoints(selectedPlayer)}
+                  </div>
+
+                  <div className="font-semibold text-yellow-500">Value:</div>
+                  <div className="text-yellow-500">
+                    {calculateValue(calculatePoints(selectedPlayer))}
+                  </div>
                 </div>
 
                 {/* Close Button */}
