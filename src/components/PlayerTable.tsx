@@ -2,7 +2,13 @@ import { useState } from "react";
 import { Player } from "../../datamodel/types";
 import { calculatePoints, calculateValue } from "@/utils/playerCalculations";
 
-const PlayerTable = ({ playerData }: { playerData: Player[] }) => {
+const PlayerTable = ({
+  playerData,
+  showPoints,
+}: {
+  playerData: Player[];
+  showPoints: boolean;
+}) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null);
   const [action, setAction] = useState<"view" | "edit" | "delete">("view");
@@ -131,15 +137,20 @@ const PlayerTable = ({ playerData }: { playerData: Player[] }) => {
                   <div className="font-semibold">Runs Conceded:</div>
                   <div>{selectedPlayer.runs_conceded}</div>
 
-                  <div className="font-semibold text-gray-200">Points:</div>
-                  <div className="text-gray-200">
-                    {calculatePoints(selectedPlayer)}
-                  </div>
-
-                  <div className="font-semibold text-yellow-500">Value:</div>
-                  <div className="text-yellow-500">
-                    {calculateValue(calculatePoints(selectedPlayer))}
-                  </div>
+                  {showPoints ? (
+                    <>
+                      <div className="font-semibold text-gray-200">Points:</div>
+                      <div className="text-gray-200">
+                        {calculatePoints(selectedPlayer)}
+                      </div>
+                      <div className="font-semibold text-yellow-500">
+                        Value:
+                      </div>
+                      <div className="text-yellow-500">
+                        {calculateValue(calculatePoints(selectedPlayer))}
+                      </div>
+                    </>
+                  ) : null}
                 </div>
 
                 {/* Close Button */}

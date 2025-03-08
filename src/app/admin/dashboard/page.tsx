@@ -3,7 +3,7 @@ import PlayerTable from "@/components/PlayerTable";
 import TournamentSummary from "@/components/TournamentSummary";
 import { Player } from "../../../../datamodel/types";
 import { useRouter } from "next/navigation";
-const playerData: Player[] = [
+export const playerData: Player[] = [
   {
     player_id: "1",
     name: "Chamika Chandimal",
@@ -238,7 +238,7 @@ const Page = () => {
               Player Statistics
             </h2>
             <div className="h-[400px] overflow-y-auto">
-              <PlayerTable playerData={playerData} />
+              <PlayerTable playerData={playerData} showPoints={true} />
             </div>
           </div>
         </div>
