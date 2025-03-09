@@ -7,6 +7,10 @@ import { Eye, EyeOff } from "lucide-react";
 import loginImage from "../../../../../public/login.png";
 import { Toaster } from "react-hot-toast";
 import { toastError } from "../../../../../src/utils/notify";
+export interface UserInputData {
+  username: string;
+  password: string;
+}
 
 export default function UserLogin() {
   const router = useRouter();
@@ -24,9 +28,12 @@ export default function UserLogin() {
     setIsLoggingIn(true);
     try {
       // Mock user authentication (Replace with actual API call)
-      if (username === "user" && password === "user123") {
-        router.push("/user/dashboard"); // Redirecting to user dashboard
-      } else {
+      const response  = await fetch("/api/auth/user/login",{method:"POST" , headers:{"Content-Type":"application/json"},body:JSON.stringify({username,password} as UserInputData) });
+      if(response.ok){
+        router.push("/user/dashboard");
+      }
+      //if (username === "user" && password === "user123") {
+      else {
         toastError("Invalid credentials");
       }
     } catch (error) {

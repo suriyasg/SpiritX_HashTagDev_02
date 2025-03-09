@@ -6,6 +6,12 @@ import Image from "next/image";
 import { Eye, EyeOff } from "lucide-react";
 import signupImage from "../../../../../public/signup.jpg";
 
+export interface UserInputData {
+  username: string;
+  password: string;
+}
+
+
 export default function Signup() {
   const router = useRouter();
   const [username, setUsername] = useState("");
@@ -32,7 +38,7 @@ export default function Signup() {
   const validateConfirmPassword = (value: string) =>
     value !== password ? "Passwords do not match" : "";
 
-  const handleSignup = () => {
+  const handleSignup = async () => {
     const usernameError = validateUsername(username);
     const passwordError = validatePassword(password);
     const confirmPasswordError = validateConfirmPassword(confirmPassword);
@@ -41,7 +47,17 @@ export default function Signup() {
 
     if (usernameError || passwordError || confirmPasswordError) return;
 
-    console.log("Signup successful with username:", username);
+    const response  = await fetch("/api/auth/user/signup",{method:"POST" , headers:{"Content-Type":"application/json"},body:JSON.stringify({username,password} as UserInputData) });
+    if(response.ok){
+        router.push("/user/dashboard");
+        console.log("Signup successful with username:", username);
+    }else{
+      console.log("signup failed");
+    }
+
+
+    
+
   };
 
   return (

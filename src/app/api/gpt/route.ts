@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+
 import { getAllPlayers } from "@/firebase/PlayerService";
 
 const genAI = new GoogleGenerativeAI("AIzaSyClrTgCGw0Ev9ID-ptwWVAlml4OS5YOaxQ");
@@ -18,7 +19,7 @@ interface Player {
 
 async function fetchPlayerData(): Promise<Player[]> {
   try {
-    const data = await getAllPlayers()
+    const data = await getAllPlayers();
     return Object.values(data);
   } catch (error) {
     console.error("Error fetching player data:", error);

@@ -1,6 +1,9 @@
 "use client";
+import { useEffect, useState } from "react";
 import { User } from "../../../../datamodel/types";
 import { useRouter } from "next/navigation";
+import { tokendata } from "@/app/api/auth/user/login/route";
+import { NextResponse } from "next/server";
 export const currUser: User = {
   user_id: "string",
   username: "pratheep",
@@ -9,22 +12,52 @@ export const currUser: User = {
   player_ids: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"],
 };
 
+
 const Page = () => {
+  const [userid,setuserid] = useState<string>();
+  const [currUser,setcurrUser] = useState<User>();
   const router = useRouter();
+  useEffect(()=>{
+    async function extractcookie() {
+      const response = await fetch("/api/auth/user/readusercookie")
+      const data = await response.json() as tokendata;
+      console.log(data);
+      return data === null ? "" : setuserid(data.user_id)
+      
+    }
+    extractcookie();
+  },[])
+  useEffect(()=>{
+    async function getuserdetails() {
+      const response:Response  = await fetch("/api/getUserById",{method:"POST" , headers:{"Content-Type":"application/json"},body:JSON.stringify({"user_id":userid}) });
+      if(response.ok){
+            const data = await response.json();
+            console.log(data.result);
+            setcurrUser(data.result);
+      }
+
+      
+      
+    }
+    getuserdetails();
+      
+
+  },[userid])
+  
   return (
     <div className="min-h-screen bg-gradient-to-r from-blue-100 via-indigo-100 to-purple-100 p-8 flex flex-col items-center justify-center space-y-6">
       <div className="bg-white p-6 rounded-xl shadow-xl w-full max-w-md transform transition-all duration-500 ease-in-out hover:scale-105">
         <div className="text-2xl font-semibold text-gray-800 tracking-wide">
-          Hello, {currUser.username}!
+          Hello, {currUser?.username}!
         </div>
         <div className="text-lg text-gray-700 mt-2">
           Your current balance:{" "}
-          <span className="font-semibold text-blue-500">{currUser.money}</span>
+          <span className="font-semibold text-blue-500">{currUser?.money}</span>
         </div>
         <div className="text-lg text-gray-700 mt-2">
           Number of players in your team:{" "}
           <span className="font-semibold text-blue-500">
-            {currUser.player_ids!.length || 0}
+            {currUser?.player_ids?.length || 0/* {currUser?.player_ids!.length || 0 || currUser?.player_ids===null} */}
           </span>{" "}
           / 11
         </div>

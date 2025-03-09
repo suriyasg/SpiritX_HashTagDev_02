@@ -15,6 +15,10 @@ export interface SignUpResponseBody {
     data: User | StatusCode | undefined;
     statusCode: StatusCode;
 }
+export interface tokendata{
+    username:string;
+    user_id:string;
+}
 
 async function checkUser(username: string, password: string) {
     try {
@@ -82,7 +86,7 @@ export async function POST(req: Request) {
         const result : SignUpResponseBody = await checkUser(username, password);
         if(result.statusCode ===  StatusCode.SUCCESS) {
             const secret = process.env.JWT_SECRET_KEY as string;
-            const token = jwt.sign({ username: username, user_id: (result.data as User).user_id }, secret, { expiresIn: '1h' });
+            const token = jwt.sign({ username: username, user_id: (result.data as User).user_id } as tokendata, secret, { expiresIn: '1h' });
             const response = Response.json({...result, data : {user_id: (result.data as User).user_id, username}}, { status: 200, headers : {} });
             cookieStore.set('token', token, { httpOnly: true, secure: false, sameSite: 'strict', maxAge: 3600 });
             cookieStore.set('username', username, { httpOnly: true, secure: false, sameSite: 'strict', maxAge: 3600 }); // to user to login smoothly but security issue in public computers
