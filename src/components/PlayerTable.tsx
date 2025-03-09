@@ -31,59 +31,64 @@ const PlayerTable = ({
     <div className="p-6 flex justify-center relative">
       <div className="w-full max-w-4xl bg-white/60 backdrop-blur-md shadow-2xl rounded-lg border border-gray-300 p-6">
         {/* Scrollable Table */}
-        <div className="overflow-x-auto">
-          <table className="w-full border-collapse">
-            {/* Table Header */}
-            <thead>
-              <tr className="bg-gradient-to-r from-blue-500 to-purple-600 text-white text-left uppercase text-sm tracking-wider backdrop-blur-lg">
-                <th className="px-6 py-4">Name</th>
-                <th className="px-6 py-4">University</th>
-                <th className="px-6 py-4">Category</th>
-                <th className="px-6 py-4 text-center">Options</th>
-              </tr>
-            </thead>
-
-            {/* Table Body */}
-            <tbody>
-              {playerData.map((player, index) => (
-                <tr
-                  key={player.name}
-                  className={`border-t border-gray-300 ${
-                    index % 2 === 0 ? "bg-white/40" : "bg-white/20"
-                  } hover:bg-blue-100/50 transition duration-300 backdrop-blur-lg`}
-                >
-                  <td className="px-6 py-4 text-gray-800 font-semibold">
-                    {player.name}
-                  </td>
-                  <td className="px-6 py-4 text-gray-700">
-                    {player.university}
-                  </td>
-                  <td className="px-6 py-4 text-gray-700">{player.category}</td>
-                  <td className="px-6 py-4 flex justify-center gap-4">
-                    <button
-                      className="px-6 py-2 text-sm font-medium text-white bg-blue-500 rounded-md hover:bg-blue-600 shadow-lg hover:shadow-blue-500/50 transition-all duration-300 backdrop-blur-lg"
-                      onClick={() => handleActionModal(player, "view")}
-                    >
-                      Stats
-                    </button>
-                    <button
-                      className="px-6 py-2 text-sm font-medium text-white bg-yellow-500 rounded-md hover:bg-yellow-600 shadow-lg hover:shadow-yellow-500/50 transition-all duration-300 backdrop-blur-lg"
-                      onClick={() => handleActionModal(player, "edit")}
-                    >
-                      Edit
-                    </button>
-                    <button
-                      className="px-6 py-2 text-sm font-medium text-white bg-red-500 rounded-md hover:bg-red-600 shadow-lg hover:shadow-red-500/50 transition-all duration-300 backdrop-blur-lg"
-                      onClick={() => handleActionModal(player, "delete")}
-                    >
-                      Delete
-                    </button>
-                  </td>
+        {playerData && playerData.length > 0 ? (
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse">
+              {/* Table Header */}
+              <thead>
+                <tr className="bg-gradient-to-r from-blue-500 to-purple-600 text-white text-left uppercase text-sm tracking-wider backdrop-blur-lg">
+                  <th className="px-6 py-4">Name</th>
+                  <th className="px-6 py-4">University</th>
+                  <th className="px-6 py-4">Category</th>
+                  <th className="px-6 py-4 text-center">Options</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+
+              {/* Table Body */}
+              <tbody>
+                {playerData.length &&
+                  playerData?.map((player, index) => (
+                    <tr
+                      key={player.name}
+                      className={`border-t border-gray-300 ${
+                        index % 2 === 0 ? "bg-white/40" : "bg-white/20"
+                      } hover:bg-blue-100/50 transition duration-300 backdrop-blur-lg`}
+                    >
+                      <td className="px-6 py-4 text-gray-800 font-semibold">
+                        {player.name}
+                      </td>
+                      <td className="px-6 py-4 text-gray-700">
+                        {player.university}
+                      </td>
+                      <td className="px-6 py-4 text-gray-700">
+                        {player.category}
+                      </td>
+                      <td className="px-6 py-4 flex justify-center gap-4">
+                        <button
+                          className="px-6 py-2 text-sm font-medium text-white bg-blue-500 rounded-md hover:bg-blue-600 shadow-lg hover:shadow-blue-500/50 transition-all duration-300 backdrop-blur-lg"
+                          onClick={() => handleActionModal(player, "view")}
+                        >
+                          Stats
+                        </button>
+                        <button
+                          className="px-6 py-2 text-sm font-medium text-white bg-yellow-500 rounded-md hover:bg-yellow-600 shadow-lg hover:shadow-yellow-500/50 transition-all duration-300 backdrop-blur-lg"
+                          onClick={() => handleActionModal(player, "edit")}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          className="px-6 py-2 text-sm font-medium text-white bg-red-500 rounded-md hover:bg-red-600 shadow-lg hover:shadow-red-500/50 transition-all duration-300 backdrop-blur-lg"
+                          onClick={() => handleActionModal(player, "delete")}
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
+          </div>
+        ) : null}
       </div>
 
       {/* Modal */}
@@ -240,7 +245,7 @@ const PlayerTable = ({
                     onChange={(e) =>
                       setSelectedPlayer({
                         ...selectedPlayer,
-                        total_runs: Number(e.target.value),
+                        total_runs: e.target.value,
                       })
                     }
                     className="bg-transparent border border-gray-500/40 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500"
@@ -254,7 +259,7 @@ const PlayerTable = ({
                     onChange={(e) =>
                       setSelectedPlayer({
                         ...selectedPlayer,
-                        balls_faced: Number(e.target.value),
+                        balls_faced: e.target.value,
                       })
                     }
                     className="bg-transparent border border-gray-500/40 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500"
@@ -268,7 +273,7 @@ const PlayerTable = ({
                     onChange={(e) =>
                       setSelectedPlayer({
                         ...selectedPlayer,
-                        innings_played: Number(e.target.value),
+                        innings_played: e.target.value,
                       })
                     }
                     className="bg-transparent border border-gray-500/40 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500"
@@ -282,7 +287,7 @@ const PlayerTable = ({
                     onChange={(e) =>
                       setSelectedPlayer({
                         ...selectedPlayer,
-                        wickets: Number(e.target.value),
+                        wickets: e.target.value,
                       })
                     }
                     className="bg-transparent border border-gray-500/40 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500"
@@ -296,7 +301,7 @@ const PlayerTable = ({
                     onChange={(e) =>
                       setSelectedPlayer({
                         ...selectedPlayer,
-                        overs_bowled: Number(e.target.value),
+                        overs_bowled: e.target.value,
                       })
                     }
                     className="bg-transparent border border-gray-500/40 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500"
@@ -310,7 +315,7 @@ const PlayerTable = ({
                     onChange={(e) =>
                       setSelectedPlayer({
                         ...selectedPlayer,
-                        runs_conceded: Number(e.target.value),
+                        runs_conceded: e.target.value,
                       })
                     }
                     className="bg-transparent border border-gray-500/40 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500"

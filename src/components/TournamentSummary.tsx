@@ -2,23 +2,51 @@ import { Player } from "../../datamodel/types";
 
 const TournamentSummary = ({ playerData }: { playerData: Player[] }) => {
   const calculateStats = (playerData: Player[]) => {
+    if (!playerData || playerData.length === 0) {
+      console.log("No player data found", playerData);
+      return {
+        overallRuns: 0,
+        overallWickets: 0,
+        highestRunScorer: { name: "", runs: 0 },
+        highestWicketTaker: { name: "", wickets: 0 },
+      };
+    }
     let overallRuns = 0;
     let overallWickets = 0;
     let highestRunScorer = { name: "", runs: 0 };
     let highestWicketTaker = { name: "", wickets: 0 };
 
-    playerData.forEach((player) => {
-      overallRuns += player.total_runs;
-      overallWickets += player.wickets;
+    if (playerData && playerData.length > 0) {
+      playerData.forEach((player) => {
+        if (typeof player.total_runs === "number" && player.total_runs >= 0) {
+          overallRuns += player.total_runs;
+        }
+        if (typeof player.total_runs === "string") {
+          overallRuns += parseInt(player.total_runs);
+        }
 
-      if (player.total_runs > highestRunScorer.runs) {
-        highestRunScorer = { name: player.name, runs: player.total_runs };
-      }
+        if (typeof player.wickets === "number" && player.wickets >= 0) {
+          overallWickets += player.wickets;
+        }
+        if (typeof player.wickets === "string") {
+          overallWickets += parseInt(player.wickets);
+        }
 
-      if (player.wickets > highestWicketTaker.wickets) {
-        highestWicketTaker = { name: player.name, wickets: player.wickets };
-      }
-    });
+        if (parseInt(player.total_runs) > highestRunScorer.runs) {
+          highestRunScorer = {
+            name: player.name,
+            runs: parseInt(player.total_runs),
+          };
+        }
+
+        if (parseInt(player.wickets) > highestWicketTaker.wickets) {
+          highestWicketTaker = {
+            name: player.name,
+            wickets: parseInt(player.wickets),
+          };
+        }
+      });
+    }
     return {
       overallRuns,
       overallWickets,

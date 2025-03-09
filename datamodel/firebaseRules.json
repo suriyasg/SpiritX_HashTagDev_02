@@ -11,6 +11,11 @@
             ".indexOn": [
                 "username"
             ]
+        },
+        "Admin": {
+            ".indexOn": [
+                "admin_name"
+            ]
         }
     }
 }

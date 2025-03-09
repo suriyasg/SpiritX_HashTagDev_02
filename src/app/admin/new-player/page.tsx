@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { Player } from "../../../../datamodel/types";
+import { addPlayer } from "@/services/playerServices";
 
 const AddPlayer = () => {
   const [playerData, setPlayerData] = useState<Player>({
@@ -8,12 +9,12 @@ const AddPlayer = () => {
     name: "",
     university: "",
     category: "",
-    total_runs: 0,
-    balls_faced: 0,
-    innings_played: 0,
-    wickets: 0,
-    overs_bowled: 0,
-    runs_conceded: 0,
+    total_runs: "",
+    balls_faced: "",
+    innings_played: "",
+    wickets: "",
+    overs_bowled: "",
+    runs_conceded: "",
   });
 
   const handleChange = (
@@ -26,7 +27,28 @@ const AddPlayer = () => {
     }));
   };
 
-  const handleSubmit = () => {};
+  const handleSubmit = () => {
+    console.log("playerData", playerData);
+    try {
+      addPlayer(playerData).then(() => {
+        alert("Player Added Successfully");
+        setPlayerData({
+          player_id: "",
+          name: "",
+          university: "",
+          category: "",
+          total_runs: "",
+          balls_faced: "",
+          innings_played: "",
+          wickets: "",
+          overs_bowled: "",
+          runs_conceded: "",
+        });
+      });
+    } catch (error) {
+      console.error("Error in Add Player", error);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-r from-blue-100 via-indigo-100 to-purple-100 p-6 flex flex-col items-center">

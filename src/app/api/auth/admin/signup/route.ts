@@ -1,11 +1,11 @@
 import bcrypt from "bcrypt";
 import { StatusCode } from "@/constants/StatusCode";
-import { createUser } from "@/firebase/UserService";
 import jwt from "jsonwebtoken";
 import { cookies } from "next/headers";
+import { createAdmin } from "@/firebase/AdminService";
 
 export interface UserInputData {
-  username: string;
+  admin_name: string;
   password: string;
 }
 
@@ -15,16 +15,15 @@ export interface SignUpResponseBody {
   statusCode: StatusCode;
 }
 
-async function registerUser(username: string, password: string) {
+async function registerUser(admin_name: string, password: string) {
   const saltRounds = 10;
   const encryptedPassword = await bcrypt.hash(password, saltRounds);
 
   try {
-    const result = await createUser({
-      username,
+    const result = await createAdmin({
+      admin_name,
       password: encryptedPassword,
-      user_id: "",
-      money: 9000000,
+      admin_id: "",
     });
     let response: SignUpResponseBody;
     if (!result) {
@@ -57,24 +56,24 @@ async function registerUser(username: string, password: string) {
 export async function POST(req: Request) {
   try {
     const body = (await req.json()) as UserInputData;
-    const { username, password } = body;
+    const { admin_name, password } = body;
     const cookieStore = await cookies();
 
-    if (!username || !password) {
+    if (!admin_name || !password) {
       return Response.json(
         {
-          message: "username and password are required",
+          message: "admin_name and password are required",
           data: undefined,
           statusCode: StatusCode.INVALID_INPUT,
         } as SignUpResponseBody,
         { status: 400 }
       );
     }
-    const result: SignUpResponseBody = await registerUser(username, password);
+    const result: SignUpResponseBody = await registerUser(admin_name, password);
     if (result.statusCode === StatusCode.NEW_USER_CREATED) {
       const secret = process.env.JWT_SECRET_KEY as string;
       const token = jwt.sign(
-        { username: username, user_id: result.data },
+        { admin_name: admin_name, user_id: result.data },
         secret,
         { expiresIn: "1h" }
       );
@@ -85,7 +84,7 @@ export async function POST(req: Request) {
         sameSite: "strict",
         maxAge: 3600,
       });
-      cookieStore.set("username", username, {
+      cookieStore.set("admin_name", admin_name, {
         httpOnly: true,
         secure: false,
         sameSite: "strict",
