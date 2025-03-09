@@ -1,0 +1,16 @@
+{
+    "rules": {
+        ".read": "now < 1743964200000",
+        ".write": "now < 1743964200000",
+        "Player": {
+            ".indexOn": [
+                "category"
+            ]
+        },
+        "User": {
+            ".indexOn": [
+                "username"
+            ]
+        }
+    }
+}

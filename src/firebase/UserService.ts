@@ -4,14 +4,30 @@ import type { Player, User } from "./../../datamodel/types";
 import { StatusCode } from '../constants/StatusCode'
 import { calculatePoints } from "@/utils/playerCalculations";
 
-export function createUser(user: User) {
+export async function createUser(user: User) {
     try {
-        var path: string = `User/${user.user_id}`
-        const userRef = ref(db, path);
-        set(userRef, { ...user } as User);
+        const userRef = ref(db, 'User/');
+        // Query to check if username already exists
+        const usernameQuery = query(userRef, orderByChild("username"), equalTo(user.username));
+        const snapshot = await get(usernameQuery);
+
+        if (snapshot.exists()) {
+            console.log("Username already exists. Please choose another one.");
+            return StatusCode.USER_ALREADY_EXISTS; // Prevent user creation if username exists
+        }
+
+        const newUserRef = push(userRef)
+        const user_id = newUserRef.key as string; // Extracts the generated ID
+        const newUser: User = {
+            ...user,
+            user_id
+        };
+        await set(newUserRef, newUser);
+        return user_id;
     }
     catch (error) {
         console.log(error)
+        return undefined
     }
 }
 
@@ -28,6 +44,29 @@ export async function getUser(user_id: string) : Promise<User | undefined> {
     }
     catch (error) {
         console.log(error)
+    }
+}
+
+export async function getUserByUserName(username: string): Promise<User | StatusCode> {
+    try {
+        const userRef = ref(db, "User"); // Reference to the "User" node
+
+        // Query to find user by username
+        const usernameQuery = query(userRef, orderByChild("username"), equalTo(username));
+        const snapshot = await get(usernameQuery);
+
+        if (snapshot.exists()) {
+            // Firebase returns an object with the user key as property, extract the first user
+            const users = snapshot.val();
+            const userId = Object.keys(users)[0]; // Get the first matching user ID
+            return users[userId]; // Return user data
+        } else {
+            console.log("No user found with this username.");
+            return StatusCode.NO_USERS_FOUND;
+        }
+    } catch (error) {
+        console.error("Error fetching user by username:", error);
+        return StatusCode.DB_ERROR;;
     }
 }
 
