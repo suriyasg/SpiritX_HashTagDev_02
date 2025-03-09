@@ -2,7 +2,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 // for firebase database init
-import { getDatabase } from "firebase/database";
+import { Database, getDatabase } from "firebase/database";
 
 // Firebase Client SDK Configs
 const firebaseConfig = {
@@ -20,7 +20,7 @@ const appInstance = initializeApp(firebaseConfig);
 export const authInstance = getAuth(appInstance);
 
 // initialize Realtime Database
-let db;
+let db : Database;
 try {
   db = getDatabase(
     appInstance,
