@@ -2,8 +2,11 @@
 import { useState } from "react";
 import { Player } from "../../../../datamodel/types";
 import { addPlayer } from "@/services/playerServices";
+import { toastSuccess } from "@/utils/notify";
+import { useRouter } from "next/navigation";
 
 const AddPlayer = () => {
+  const router = useRouter();
   const [playerData, setPlayerData] = useState<Player>({
     player_id: "",
     name: "",
@@ -31,7 +34,7 @@ const AddPlayer = () => {
     console.log("playerData", playerData);
     try {
       addPlayer(playerData).then(() => {
-        alert("Player Added Successfully");
+        toastSuccess("Player Added Successfully");
         setPlayerData({
           player_id: "",
           name: "",
@@ -44,10 +47,16 @@ const AddPlayer = () => {
           overs_bowled: "",
           runs_conceded: "",
         });
+        router.push("/admin/dashboard");
+        window.location.href = "/admin/dashboard";
       });
     } catch (error) {
       console.error("Error in Add Player", error);
     }
+  };
+
+  const handleBack = () => {
+    router.push("/user/dashboard");
   };
 
   return (
@@ -58,6 +67,7 @@ const AddPlayer = () => {
 
       <div className="w-full max-w-xl bg-white p-8 rounded-2xl shadow-2xl transform transition-all duration-500 ease-in-out">
         <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Form fields here */}
           <div>
             <label
               htmlFor="name"
@@ -152,6 +162,23 @@ const AddPlayer = () => {
               className="w-full px-6 py-3 mt-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600 transition-all duration-300 ease-in-out hover:border-blue-400 text-gray-900"
             />
           </div>
+          <div>
+            <label
+              htmlFor="wickets"
+              className="block text-sm font-semibold text-gray-800 tracking-wider"
+            >
+              Innings Played
+            </label>
+            <input
+              id="innings_played"
+              name="innings_played"
+              type="number"
+              value={playerData.innings_played}
+              onChange={handleChange}
+              required
+              className="w-full px-6 py-3 mt-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600 transition-all duration-300 ease-in-out hover:border-blue-400 text-gray-900"
+            />
+          </div>
 
           <div>
             <label
@@ -214,6 +241,12 @@ const AddPlayer = () => {
             Add Player
           </button>
         </form>
+        <button
+          onClick={handleBack}
+          className="w-full mt-4 py-3 bg-gradient-to-r from-gray-500 to-gray-700 text-white font-semibold rounded-xl shadow-xl hover:from-gray-600 hover:to-gray-800 focus:ring-4 focus:ring-gray-300 transition-all duration-300 ease-in-out"
+        >
+          Back to Dashboard
+        </button>
       </div>
     </div>
   );

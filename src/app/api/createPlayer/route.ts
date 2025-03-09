@@ -1,5 +1,4 @@
 import { createPlayer } from "@/firebase/PlayerService";
-import { Player } from "../../../../datamodel/types";
 import { StatusCode } from "@/constants/StatusCode";
 
 interface ResponseData {
