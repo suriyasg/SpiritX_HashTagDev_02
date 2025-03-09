@@ -11,7 +11,7 @@ interface ResponseData {
 export async function POST(req:Request) {
     try {
         const user = await req.json();
-        const result = createUser(user)
+        const result = await createUser(user)
         return new Response(JSON.stringify(result), { status: 200 });
     }
     catch (error) {
