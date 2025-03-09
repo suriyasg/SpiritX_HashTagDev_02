@@ -5,54 +5,60 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Player } from "../../../../../datamodel/types";
 import { getAllPlayers } from "../../../../services/playerServices";
+import Image from "next/image";
+
 const Page = () => {
   const [playerData, setPlayerData] = useState<Player[]>([]);
-
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchPlayers = async () => {
       setLoading(true);
       try {
         const response: Player[] = await getAllPlayers();
-        console.log("Fetched response:", response, typeof response); // Check API response
-
+        console.log("Fetched response:", response); // ✅ Logs correctly
+  
         if (!response || response.length === 0) {
           console.warn("No players returned from API");
         }
-
+  
         setPlayerData(response);
-
-        // Use a useEffect to log when the state updates
+        setLoading(false); // ✅ Stops loading after data is fetched
       } catch (error) {
         console.error("Failed to fetch players:", error);
+        setLoading(false); // ✅ Even if error, stop loading
       }
     };
-
+  
     fetchPlayers();
   }, []);
-  const router = useRouter();
-  return loading ? (
-    <div className="bg-gradient-to-r from-blue-100 via-indigo-100 to-purple-100 p-8 flex flex-col items-center justify-center space-y-4">
-      <div className="w-full max-w-6xl bg-white p-6 rounded-xl shadow-xl overflow-x-auto">
-        <div className="mt-2 flex justify-center">
+  
+
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-white via-gray-100 to-gray-200 p-8 flex flex-col items-center justify-center space-y-6">
+      {loading ? (
+        <div className="flex flex-col items-center justify-center">
+          <div className="animate-spin rounded-full h-20 w-20 border-t-4 border-blue-500"></div>
+          <h2 className="text-2xl font-semibold text-gray-700 mt-4">⏳ Loading...</h2>
+          <p className="text-gray-500 text-center mt-2">Fetching player data, please wait.</p>
+        </div>
+      ) : (
+        <div className="w-full max-w-6xl bg-white p-8 rounded-xl shadow-xl overflow-x-auto flex flex-col items-center">
+          <Image src="/players.png" alt="User Dashboard" width={200} height={200} className="rounded-lg shadow-md mb-4" />
+          <h1 className="text-3xl font-bold text-gray-800">⚽ Available Players</h1>
+          <p className="text-gray-600 mt-2">Manage your team wisely and stay ahead! 🚀</p>
+          <div className="mt-4 w-full">
+            <UserPlayerTable playerData={playerData} />
+          </div>
           <button
             onClick={() => router.push("/user/dashboard")}
-            className="py-2 px-4 bg-gradient-to-r from-blue-500 to-indigo-500 text-white font-semibold rounded-lg shadow-md hover:from-blue-600 hover:to-indigo-600 focus:ring-4 focus:ring-blue-300 transition-all duration-300 ease-in-out"
+            className="mt-6 py-3 px-6 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 focus:ring-4 focus:ring-blue-300 transition-all duration-300 ease-in-out"
           >
-            Back to Dashboard
+            🔙 Back to Dashboard
           </button>
         </div>
-        <UserPlayerTable playerData={playerData} />
-      </div>
-    </div>
-  ) : (
-    <div className="min-h-screen bg-gradient-to-r from-blue-100 via-indigo-100 to-purple-100 p-8 flex flex-col items-center justify-center space-y-6">
-      <div className="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-32 w-32 mb-4"></div>
-      <h2 className="text-center text-2xl font-semibold">Loading...</h2>
-      <p className="w-1/3 text-center text-gray-500">
-        Please wait while we fetch the player data for you.
-      </p>
+      )}
     </div>
   );
 };
