@@ -36,20 +36,16 @@ export const UserSignup = async (username: string, password: string) => {
   }
 };
 
-export const adminLogin = async (username: string, password: string) => {
+export const adminLogin = async (admin_name: string, password: string) => {
   try {
     const response = await axios.post("/api/auth/admin/login", {
-      username,
+      admin_name,
       password,
     });
     console.log("response", response.data);
-    return response.data;
+    return response.data.statusCode;
   } catch (error) {
     console.error("Error in login", error);
-    if (axios.isAxiosError(error) && error.response) {
-      return error.response.data;
-    } else {
-      throw error;
-    }
+    throw error;
   }
 };

@@ -6,34 +6,38 @@ import Image from "next/image";
 import { Eye, EyeOff } from "lucide-react";
 import loginImage from "../../../../../public/login.png";
 import { Toaster } from "react-hot-toast";
-import { toastError } from "../../../../utils/notify";
+import { toastError, toastSuccess } from "../../../../utils/notify";
+import { adminLogin } from "@/services/authServices";
 
 export default function AdminLogin() {
   const router = useRouter();
-  const [username, setUsername] = useState("");
+  const [adminName, setAdminName] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   const handleLogin = async () => {
-    if (!username || !password) {
+    if (!adminName || !password) {
       toastError("Fill all Fields");
       return;
     }
-    
+
     setIsLoggingIn(true);
     try {
-      // Mock admin authentication (Replace with actual API call)
-      if (username === "admin" && password === "admin123") {
+      const response = await adminLogin(adminName, password); // Await the login function
+
+      if (response === "SUCCESS") {
+        // Check if the login was successful
+        toastSuccess("Login Success");
         router.push("/admin/dashboard");
       } else {
-        toastError("Invalid credentials");
+        toastError("Invalid Credentials");
       }
     } catch (error) {
-      console.error("Login Error: ", error);
-      toastError("Something went wrong");
+      toastError("Login Failed");
+      console.error("Login Failed", error);
     } finally {
-      setIsLoggingIn(false);
+      setIsLoggingIn(false); // Ensure this runs even if an error occurs
     }
   };
 
@@ -47,7 +51,11 @@ export default function AdminLogin() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <Image src={loginImage} alt="AdminLogin" className="w-60 h-60 object-cover" />
+          <Image
+            src={loginImage}
+            alt="AdminLogin"
+            className="w-60 h-60 object-cover"
+          />
         </motion.div>
 
         {/* Right Side - Form */}
@@ -71,8 +79,8 @@ export default function AdminLogin() {
             type="text"
             placeholder="Enter your username"
             className="w-full p-4 border rounded-lg mb-6 text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 transition-all duration-300"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            value={adminName}
+            onChange={(e) => setAdminName(e.target.value)}
           />
 
           {/* Password input */}

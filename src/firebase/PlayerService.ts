@@ -3,6 +3,7 @@ import { db } from "./firebase";
 import type { Player, User } from "./../../datamodel/types";
 import { StatusCode } from '../constants/StatusCode'
 import { calculatePoints } from "@/utils/playerCalculations";
+import { generateLeaderBoardAdminUpdatePlayer } from "./LeaderBoardService";
 
 
 export async function createPlayer(player: Omit<Player, "player_id"> & { player_id?: string }) {
@@ -64,15 +65,31 @@ export async function updatePlayer(player_id: string, updatedData: Partial<Playe
         const snapshot = await get(playerRef);
         if (snapshot.exists()) {
             const existingPlayer: Player = snapshot.val();
-
+            const oldpoints = existingPlayer.player_points;
             // Merge new data while keeping old fields intact
             const finalUpdate = {
                 ...existingPlayer,
                 ...updatedData
             };
-            const points = calculatePoints({...finalUpdate, player_id: ""})
-            await update(playerRef, {...finalUpdate, player_points: points } as Player);
+            const newpoints = calculatePoints({...finalUpdate, player_id: ""})
+            await update(playerRef, {...finalUpdate, player_points: newpoints } as Player);
             console.log("Player updated successfully!");
+
+            if(oldpoints) {
+                if(oldpoints === newpoints) {
+                    // no need to update leader board
+                } else {
+                    console.log("generating leader board")
+                    generateLeaderBoardAdminUpdatePlayer(player_id, oldpoints - newpoints)
+                }
+            }
+            else {
+                console.log("generating leader board")
+                generateLeaderBoardAdminUpdatePlayer(player_id, newpoints)
+            }
+
+            console.log("Updating leader board updated successfully!");
+
         } else {
             console.error("Player not found!");
         }
