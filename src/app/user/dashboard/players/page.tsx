@@ -4,7 +4,7 @@ import UserPlayerTable from "@/components/UserPlayerTable";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Player } from "../../../../../datamodel/types";
-import { getAllPlayers } from "@/services/playerServices";
+import { getAllPlayers } from "../../../../services/playerServices";
 const Page = () => {
   const [playerData, setPlayerData] = useState<Player[]>([]);
 
