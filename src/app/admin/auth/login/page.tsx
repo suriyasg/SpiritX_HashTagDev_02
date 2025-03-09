@@ -58,7 +58,7 @@ export default function AdminLogin() {
           transition={{ duration: 0.5 }}
         >
           <motion.h2
-            className="text-blue-500 text-3xl font-semibold mb-6 text-center md:text-left"
+            className="text-green-500 text-3xl font-semibold mb-6 text-center md:text-left"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
@@ -70,7 +70,7 @@ export default function AdminLogin() {
           <input
             type="text"
             placeholder="Enter your username"
-            className="w-full p-4 border rounded-lg mb-6 text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300"
+            className="w-full p-4 border rounded-lg mb-6 text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 transition-all duration-300"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
           />
@@ -80,7 +80,7 @@ export default function AdminLogin() {
             <input
               type={showPassword ? "text" : "password"}
               placeholder="Password"
-              className="w-full p-4 border rounded-lg text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300 pr-10"
+              className="w-full p-4 border rounded-lg text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 transition-all duration-300 pr-10"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
@@ -94,7 +94,7 @@ export default function AdminLogin() {
 
           {/* Login Button */}
           <button
-            className={`w-full bg-blue-500 text-white py-4 rounded-lg transition-transform transform mt-4 ${
+            className={`w-full bg-green-500 text-white py-4 rounded-lg transition-transform transform mt-4 ${
               isLoggingIn
                 ? "opacity-50 cursor-not-allowed"
                 : "hover:bg-blue-600 hover:scale-105"

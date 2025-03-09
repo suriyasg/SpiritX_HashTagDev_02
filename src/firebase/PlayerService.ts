@@ -2,16 +2,18 @@ import { child, equalTo, get, limitToLast, orderByChild, orderByKey, push, query
 import { db } from "./firebase";
 import type { Player, User } from "./../../datamodel/types";
 import { StatusCode } from '../constants/StatusCode'
+import { calculatePoints } from "@/utils/playerCalculations";
 
 
 export async function createPlayer(player: Omit<Player, "player_id"> & { player_id?: string }) {
     const playerRef = ref(db, "Player");
     const newPlayerRef = push(playerRef); // Generates a unique ID
     const player_id = newPlayerRef.key as string; // Extracts the generated ID
-
+    const points = calculatePoints({...player, player_id: ""})
     const newPlayer: Player = {
         ...player,
-        player_id // Assign the generated ID
+        player_id, // Assign the generated ID
+        player_points: points
     };
     try {
         await set(newPlayerRef, newPlayer);
@@ -68,8 +70,8 @@ export async function updatePlayer(player_id: string, updatedData: Partial<Playe
                 ...existingPlayer,
                 ...updatedData
             };
-
-            await update(playerRef, finalUpdate);
+            const points = calculatePoints({...finalUpdate, player_id: ""})
+            await update(playerRef, {...finalUpdate, player_points: points } as Player);
             console.log("Player updated successfully!");
         } else {
             console.error("Player not found!");
