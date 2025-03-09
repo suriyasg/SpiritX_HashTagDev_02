@@ -50,7 +50,7 @@ const Page = () => {
                     <table className="w-full border-collapse text-gray-700 text-sm bg-white shadow-md rounded-lg">
                         <thead>
                             <tr className="bg-indigo-200 text-gray-800 uppercase text-xs">
-                                <th className="p-3 text-left">User ID</th>
+                                <th className="p-3 text-left">Username</th>
                                 <th className="p-3 text-right">Total</th>
                             </tr>
                         </thead>
@@ -64,7 +64,7 @@ const Page = () => {
                                             }`}
                                     >
                                         <td className="p-3">
-                                            {index + 1}. {data.user_id}
+                                            {index + 1}. {data.username}
                                         </td>
                                         <td className="p-3 text-right">{data.team_total_points}</td>
                                     </tr>
