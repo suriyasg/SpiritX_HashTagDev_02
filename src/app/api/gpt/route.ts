@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { getAllPlayers } from "@/firebase/PlayerService";
 
 const genAI = new GoogleGenerativeAI("AIzaSyClrTgCGw0Ev9ID-ptwWVAlml4OS5YOaxQ");
 
@@ -17,12 +18,7 @@ interface Player {
 
 async function fetchPlayerData(): Promise<Player[]> {
   try {
-    // Change the API call to use the local Next.js API route
-    const response = await fetch("/api/getAllPlayers");
-    if (!response.ok) {
-      throw new Error("Failed to fetch player data");
-    }
-    const data = await response.json();
+    const data = await getAllPlayers()
     return Object.values(data);
   } catch (error) {
     console.error("Error fetching player data:", error);
