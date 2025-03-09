@@ -9,7 +9,7 @@ export async function middleware(request: NextRequest) {
     console.log("Token:", token ?? "No token");
 
     const authRoutes = ["/api/auth/admin/login", "/api/auth/admin/signup", "/api/auth/user/login", "/api/auth/user/signup"];
-    const authPages = ["admin/auth", "user/auth"];
+    const authPages = ["/admin/auth/login", "/admin/auth/signup", "/user/auth/login", "/user/auth/signup"];
 
     const adminProtectedRoutes = ["/api/createPlayer", "/api/createMultiplePlayers" , "/api/deletePlayer", "/api/updatePlayer", "/api/getUserById"];
     const userProtectedRoutes = ["/api/addMultiplePlayersToUser", "/api/addPlayerToUser",  "/api/getAllPlayers", "/api/getLeaderBoard", "/api/getPlayerByCategory", "/api/removePlayerFromUser"];
