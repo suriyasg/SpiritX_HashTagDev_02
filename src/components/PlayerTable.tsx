@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Player } from "../../datamodel/types";
 import { calculatePoints, calculateValue } from "@/utils/playerCalculations";
+import { deletePlayer, updatePlayer } from "@/services/playerServices";
 
 const PlayerTable = ({
   playerData,
@@ -21,10 +22,28 @@ const PlayerTable = ({
     setModalOpen(true);
   };
 
-  function handleDelete(): void {}
+  function handleDelete(player_id: string): void {
+    if (player_id) {
+      try {
+        deletePlayer(player_id).then(() => {
+          alert("Player deleted successfully");
+          setModalOpen(false);
+        });
+      } catch (error) {
+        console.error("Error in deletePlayer", error);
+      }
+    }
+  }
 
-  function handleEditPlayer(): void {
-    throw new Error("Function not implemented.");
+  function handleEditPlayer(player: Player): void {
+    try {
+      updatePlayer(player.player_id, player).then(() => {
+        alert("Player updated successfully");
+        setModalOpen(false);
+      });
+    } catch (error) {
+      console.error("Error in updatePlayer", error);
+    }
   }
 
   return (
@@ -192,7 +211,9 @@ const PlayerTable = ({
 
                 {/* Form Layout */}
                 <form
-                  onSubmit={handleEditPlayer}
+                  onSubmit={() => {
+                    handleEditPlayer(selectedPlayer);
+                  }}
                   className="grid grid-cols-2 gap-4 text-sm border border-gray-500/30 p-4 rounded-lg"
                 >
                   {/* Name */}
@@ -332,7 +353,9 @@ const PlayerTable = ({
                     Cancel
                   </button>
                   <button
-                    onClick={handleEditPlayer}
+                    onClick={() => {
+                      handleEditPlayer(selectedPlayer);
+                    }}
                     className="px-6 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-500 to-purple-600 
                      rounded-md hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-blue-500/50"
                   >
@@ -377,7 +400,9 @@ const PlayerTable = ({
                     Cancel
                   </button>
                   <button
-                    onClick={handleDelete}
+                    onClick={() => {
+                      handleDelete(selectedPlayer.player_id);
+                    }}
                     className="px-6 py-2 text-sm font-medium text-white bg-gradient-to-r from-red-500 to-pink-600 
                      rounded-md hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-red-500/50"
                   >
