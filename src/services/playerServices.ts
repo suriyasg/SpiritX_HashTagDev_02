@@ -33,7 +33,9 @@ export const getPlayerByCataegory = async (category: string) => {
 
 export const addPlayer = async (player: Player) => {
   try {
-    const response = await axios.post("/api/createPlayer", player);
+    const response = await axios.post("/api/createPlayer", player, {
+      timeout: 20000,
+    });
     console.log("response", response.data);
     return response.data;
   } catch (error) {

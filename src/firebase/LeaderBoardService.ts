@@ -35,8 +35,8 @@ export async function generateLeaderBoard() {
         leaderboard.sort((a, b) => b.team_total_points - a.team_total_points);
 
         // Step 3: Limit leaderboard to top 10 players (or less if fewer users meet the criteria)
-        const maxLeaderboardSize = 10;
-        leaderboard = leaderboard.slice(0, maxLeaderboardSize);
+        // const maxLeaderboardSize = 10;
+        // leaderboard = leaderboard.slice(0, maxLeaderboardSize);
 
         // Step 4: Update leaderboard in Firebase
         const leaderboardRef = ref(db, "LeaderBoard");
@@ -50,6 +50,7 @@ export async function generateLeaderBoard() {
         return { status: StatusCode.ERROR };
     }
 }
+
 
 
 // here we will compare change only re-generate leader board if necessary
@@ -196,6 +197,42 @@ export async function removeUserFromLeaderBoard(user_id: string) {
 
         return { status: StatusCode.SUCCESS };
 
+    } catch (error) {
+        console.error("Error updating leaderboard:", error);
+        return { status: StatusCode.SERVER_ERROR };
+    }
+}
+
+// we will call this function when player's point changes due to updates
+export async function generateLeaderBoardAdminUpdatePlayer(player_id: string, pointsDifference : number) { // new points - old points
+    try {
+        const usersRef = ref(db, "User");
+        const usersSnapshot = await get(usersRef);
+
+        if (!usersSnapshot.exists()) {
+            console.log("No users found.");
+            return { status: StatusCode.NO_USERS_FOUND };
+        }
+
+        let leaderboard: { user_id: string; username: string; team_total_points: number }[] = [];
+
+        const updates: Record<string, number> = {};
+        // Step 1: Filter users with at least 11 players
+        const users = Object.values(usersSnapshot.val()) as User[];
+        users.forEach(user => {
+            if (user.player_ids && user.player_ids.length >= 11) {
+                // check if user has that player in their team if yes update the total team points
+                if (user.player_ids.includes(player_id)) {
+                    // Add points difference to the user's total team points
+                    const newTotalPoints = (user.team_total_points ?? 0) + pointsDifference;
+                    updates[`users/${user.user_id}/team_total_points`] = newTotalPoints;
+                }
+            }
+        });
+        // Update all affected users in the database
+        await update(ref(db), updates);
+
+        return generateLeaderBoard()
     } catch (error) {
         console.error("Error updating leaderboard:", error);
         return { status: StatusCode.SERVER_ERROR };
