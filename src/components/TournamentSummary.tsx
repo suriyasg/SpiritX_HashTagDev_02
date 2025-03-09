@@ -7,46 +7,31 @@ const TournamentSummary = ({ playerData }: { playerData: Player[] }) => {
       return {
         overallRuns: 0,
         overallWickets: 0,
-        highestRunScorer: { name: "", runs: 0 },
-        highestWicketTaker: { name: "", wickets: 0 },
+        highestRunScorer: { name: "N/A", runs: 0 },
+        highestWicketTaker: { name: "N/A", wickets: 0 },
       };
     }
+
     let overallRuns = 0;
     let overallWickets = 0;
     let highestRunScorer = { name: "", runs: 0 };
     let highestWicketTaker = { name: "", wickets: 0 };
 
-    if (playerData && playerData.length > 0) {
-      playerData.forEach((player) => {
-        if (typeof player.total_runs === "number" && player.total_runs >= 0) {
-          overallRuns += player.total_runs;
-        }
-        if (typeof player.total_runs === "string") {
-          overallRuns += parseInt(player.total_runs);
-        }
+    playerData.forEach((player) => {
+      const runs = parseInt(player.total_runs) || 0;
+      const wickets = parseInt(player.wickets) || 0;
+      
+      overallRuns += runs;
+      overallWickets += wickets;
+      
+      if (runs > highestRunScorer.runs) {
+        highestRunScorer = { name: player.name, runs };
+      }
+      if (wickets > highestWicketTaker.wickets) {
+        highestWicketTaker = { name: player.name, wickets };
+      }
+    });
 
-        if (typeof player.wickets === "number" && player.wickets >= 0) {
-          overallWickets += player.wickets;
-        }
-        if (typeof player.wickets === "string") {
-          overallWickets += parseInt(player.wickets);
-        }
-
-        if (parseInt(player.total_runs) > highestRunScorer.runs) {
-          highestRunScorer = {
-            name: player.name,
-            runs: parseInt(player.total_runs),
-          };
-        }
-
-        if (parseInt(player.wickets) > highestWicketTaker.wickets) {
-          highestWicketTaker = {
-            name: player.name,
-            wickets: parseInt(player.wickets),
-          };
-        }
-      });
-    }
     return {
       overallRuns,
       overallWickets,
@@ -55,45 +40,35 @@ const TournamentSummary = ({ playerData }: { playerData: Player[] }) => {
     };
   };
 
+  const { overallRuns, overallWickets, highestRunScorer, highestWicketTaker } = calculateStats(playerData);
+
   return (
-    <div className="w-full max-w-4xl bg-white/60 backdrop-blur-md shadow-2xl rounded-lg border border-gray-300 p-6 items-center justify-center">
-      <h1 className="text-2xl font-semibold text-gray-800 mb-4 text-center">
-        Tournament Summary
-      </h1>
+    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+      <div className="w-full max-w-4xl bg-white/70 backdrop-blur-lg shadow-2xl rounded-xl border border-gray-300 p-6"> 
+        <h1 className="text-3xl font-bold text-gray-900 text-center mb-6">Tournament Summary</h1>
+        
+        <div className="grid grid-cols-2 gap-6 text-lg text-gray-800">
+          {/* Overall Stats */}
+          <div className="flex flex-col items-center p-4 bg-blue-100 rounded-lg shadow-md">
+            <h2 className="font-semibold">Overall Runs Scored</h2>
+            <span className="text-blue-600 text-xl font-bold">{overallRuns}</span>
+          </div>
+          <div className="flex flex-col items-center p-4 bg-red-100 rounded-lg shadow-md">
+            <h2 className="font-semibold">Overall Wickets Taken</h2>
+            <span className="text-red-600 text-xl font-bold">{overallWickets}</span>
+          </div>
 
-      <div className="flex flex-col items-center gap-6 justify-center">
-        {/* Overall Stats */}
-        <div className="flex flex-col items-center justify-center">
-          <h2 className="text-lg font-semibold text-gray-800 mb-2">
-            Overall Runs Scored:{" "}
-            <span className="text-blue-600">
-              {calculateStats(playerData).overallRuns}
-            </span>
-          </h2>
-          <h2 className="text-lg font-semibold text-gray-800 mb-2">
-            Overall Wickets Taken:{" "}
-            <span className="text-red-600">
-              {calculateStats(playerData).overallWickets}
-            </span>
-          </h2>
-        </div>
-
-        {/* Highest Scorers */}
-        <div className="flex flex-col items-center">
-          <h2 className="text-lg font-semibold text-gray-800 mb-2">
-            Highest Run Scorer:{" "}
-            <span className="text-green-600">
-              {calculateStats(playerData).highestRunScorer.name} (
-              {calculateStats(playerData).highestRunScorer.runs} runs)
-            </span>
-          </h2>
-          <h2 className="text-lg font-semibold text-gray-800 mb-2">
-            Highest Wicket Taker:{" "}
-            <span className="text-orange-600">
-              {calculateStats(playerData).highestWicketTaker.name} (
-              {calculateStats(playerData).highestWicketTaker.wickets} wickets)
-            </span>
-          </h2>
+          {/* Highest Performers */}
+          <div className="flex flex-col items-center p-4 bg-green-100 rounded-lg shadow-md">
+            <h2 className="font-semibold">Highest Run Scorer</h2>
+            <span className="text-green-600 text-xl font-bold">{highestRunScorer.name}</span>
+            <span className="text-gray-700">({highestRunScorer.runs} runs)</span>
+          </div>
+          <div className="flex flex-col items-center p-4 bg-orange-100 rounded-lg shadow-md">
+            <h2 className="font-semibold">Highest Wicket Taker</h2>
+            <span className="text-orange-600 text-xl font-bold">{highestWicketTaker.name}</span>
+            <span className="text-gray-700">({highestWicketTaker.wickets} wickets)</span>
+          </div>
         </div>
       </div>
     </div>
