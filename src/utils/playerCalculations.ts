@@ -1,6 +1,10 @@
 import { Player } from "../../datamodel/types";
 
 export const calculatePoints = (player: Player) => {
+  if (!player) {
+    console.log("No Player Found");
+    return 0;
+  }
   const battingStrikeRate =
     Number(player.balls_faced) !== 0
       ? (Number(player.total_runs) / Number(player.balls_faced)) * 100
