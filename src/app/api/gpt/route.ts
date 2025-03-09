@@ -3,7 +3,6 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const genAI = new GoogleGenerativeAI("AIzaSyClrTgCGw0Ev9ID-ptwWVAlml4OS5YOaxQ");
 
-
 interface Player {
   name: string;
   university: string;
@@ -18,6 +17,7 @@ interface Player {
 
 async function fetchPlayerData(): Promise<Player[]> {
   try {
+    // Change the API call to use the local Next.js API route
     const response = await fetch("/api/getAllPlayers");
     if (!response.ok) {
       throw new Error("Failed to fetch player data");
@@ -29,7 +29,6 @@ async function fetchPlayerData(): Promise<Player[]> {
     throw error;
   }
 }
-
 
 function formatPlayerStats(players: Player[]): string {
   return players
@@ -49,10 +48,13 @@ async function generateAIResponse(prompt: string): Promise<string> {
 
 export async function POST(req: NextRequest) {
   try {
-    // Fetch player data from the API
+    // Fetch player data from the local API
     const players = await fetchPlayerData();
     if (!players || players.length === 0) {
-      return NextResponse.json({ error: "No player data found" }, { status: 400 });
+      return NextResponse.json(
+        { error: "No player data found" },
+        { status: 400 }
+      );
     }
 
     // Get user query from the request body
@@ -86,7 +88,10 @@ User Query: ${query}`;
     if (error instanceof Error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     } else {
-      return NextResponse.json({ error: "An unknown error occurred" }, { status: 500 });
+      return NextResponse.json(
+        { error: "An unknown error occurred" },
+        { status: 500 }
+      );
     }
   }
 }
