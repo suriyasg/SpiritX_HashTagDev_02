@@ -82,7 +82,7 @@ export async function generateLeaderBoardWhenUserAddsPlayer(user_id: string, use
         await update(userRef, { team_total_points: updatedPoints });
         // Step 4: If leaderboard is empty, add user directly
         if (leaderboard.length === 0) {
-            await set(leaderboardRef, [{ user_id, team_total_points: updatedPoints }]);
+            await set(leaderboardRef, [{ user_id, team_total_points: updatedPoints, username }]);
             console.log("Leaderboard initialized with first user.");
             return { status: StatusCode.SUCCESS, updatedLeaderboard: true };
         }
