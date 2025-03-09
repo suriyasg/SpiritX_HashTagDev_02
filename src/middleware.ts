@@ -11,7 +11,7 @@ export async function middleware(request: NextRequest) {
     const authRoutes = ["/api/auth/admin/login", "/api/auth/admin/signup", "/api/auth/user/login", "/api/auth/user/signup"];
     const authPages = ["admin/auth", "user/auth"];
 
-    const adminProtectedRoutes = ["/api/createPlayer", "/api/deletePlayer", "/api/updatePlayer", "/api/getUserById"];
+    const adminProtectedRoutes = ["/api/createPlayer", "/api/createMultiplePlayers" , "/api/deletePlayer", "/api/updatePlayer", "/api/getUserById"];
     const userProtectedRoutes = ["/api/addMultiplePlayersToUser", "/api/addPlayerToUser",  "/api/getAllPlayers", "/api/getLeaderBoard", "/api/getPlayerByCategory", "/api/removePlayerFromUser"];
 
     const adminProtectedPages = ["/admin/dashboard", "/admin/new-player"];
